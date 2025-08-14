@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Редактирование профиля</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" value="{{ user.email }}" disabled>
+            <small class="form-text text-muted">Для изменения email обратитесь в поддержку</small>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="id_first_name" class="form-label">Имя</label>
+                {{ form.first_name }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="id_last_name" class="form-label">Фамилия</label>
+                {{ form.last_name }}
+            </div>
+        </div>
+
+        <div class="mb-3 form-check">
+            {{ form.subscribed_to_news }}
+            <label class="form-check-label" for="id_subscribed_to_news">Подписаться на новостную рассылку</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+        <a href="{% url 'profile' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}

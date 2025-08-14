@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Новый отклик на ваше объявление</title>
+</head>
+<body>
+    <h2>Новый отклик на ваше объявление "{{ response.post.title }}"</h2>
+    <p>Пользователь {{ response.author.email }} оставил отклик:</p>
+    <blockquote>{{ response.text }}</blockquote>
+
+    <p>Вы можете просмотреть все отклики в вашем <a href="http://{{ domain }}{% url 'response_list' %}">личном кабинете</a>.</p>
+
+    <hr>
+    <p>С уважением,<br>Команда MMORPG Board</p>
+</body>
+</html>

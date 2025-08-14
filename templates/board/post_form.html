@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>{% if object %}Редактировать объявление{% else %}Создать новое объявление{% endif %}</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_category" class="form-label">Категория</label>
+            {{ form.category }}
+        </div>
+        <div class="mb-3">
+            <label for="id_title" class="form-label">Заголовок</label>
+            {{ form.title }}
+        </div>
+        <div class="mb-3">
+            <label for="id_content" class="form-label">Содержание</label>
+            {{ form.content }}
+        </div>
+        <div class="mb-3">
+            <label for="id_image" class="form-label">Изображение (необязательно)</label>
+            {{ form.image }}
+        </div>
+        <button type="submit" class="btn btn-primary">
+            {% if object %}Сохранить изменения{% else %}Опубликовать{% endif %}
+        </button>
+    </form>
+</div>
+{% endblock %}

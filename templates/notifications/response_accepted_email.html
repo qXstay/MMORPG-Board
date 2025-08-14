@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ваш отклик принят</title>
+</head>
+<body>
+    <h2>Ваш отклик принят!</h2>
+    <p>Автор объявления "{{ response.post.title }}" принял ваш отклик:</p>
+    <blockquote>{{ response.text }}</blockquote>
+
+    <p>Просмотреть объявление: <a href="http://{{ domain }}{% url 'post_detail' response.post.id %}">{{ response.post.title }}</a></p>
+
+    <hr>
+    <p>С уважением,<br>Команда MMORPG Board</p>
+</body>
+</html>

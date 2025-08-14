@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h2>{{ post.title }}</h2>
+            <p class="mb-0">
+                <span class="badge bg-primary">{{ post.get_category_display }}</span>
+                <small class="text-muted">Опубликовано: {{ post.created_at|date:"d M Y H:i" }}</small>
+            </p>
+        </div>
+
+        <div class="card-body">
+            {% if post.image %}
+                <img src="{{ post.image.url }}" class="img-fluid mb-4" alt="{{ post.title }}">
+            {% endif %}
+
+            <div class="post-content mb-4">
+                {{ post.content|linebreaks }}
+            </div>
+
+            {% if post.author == request.user %}
+                <div class="d-flex gap-2 mb-4">
+                    <a href="{% url 'post_edit' post.pk %}" class="btn btn-warning">Редактировать</a>
+                    <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger">Удалить</a>
+                </div>
+            {% endif %}
+
+            <hr>
+
+            <h4>Отклики</h4>
+            {% if request.user.is_authenticated %}
+                <form method="post" action="{% url 'create_response' post.pk %}" class="mb-4">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea name="text" class="form-control" placeholder="Напишите ваш отклик..." rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить отклик</button>
+                </form>
+            {% else %}
+                <div class="alert alert-info">
+                    <a href="{% url 'account_login' %}?next={% url 'post_detail' post.pk %}">Войдите</a>, чтобы оставить отклик
+                </div>
+            {% endif %}
+
+            {% for response in post.responses.all %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title">{{ response.author.email }}</h6>
+                            <small class="text-muted">{{ response.created_at|date:"d M Y H:i" }}</small>
+                        </div>
+                        <p class="card-text">{{ response.text }}</p>
+
+                        {% if post.author == request.user and not response.accepted %}
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'accept_response' response.pk %}" class="btn btn-sm btn-success">Принять</a>
+                                <a href="{% url 'delete_response' response.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+                            </div>
+                        {% elif response.accepted %}
+                            <span class="badge bg-success">Принято</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="alert alert-secondary">
+                    Пока нет откликов. Будьте первым!
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

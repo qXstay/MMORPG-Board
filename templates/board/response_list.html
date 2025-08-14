@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Отклики на ваши объявления</h2>
+
+    <div class="mb-4">
+        <div class="btn-group" role="group">
+            <a href="?status=all" class="btn btn-outline-secondary {% if status_filter == 'all' %}active{% endif %}">Все</a>
+            <a href="?status=accepted" class="btn btn-outline-success {% if status_filter == 'accepted' %}active{% endif %}">Принятые</a>
+            <a href="?status=pending" class="btn btn-outline-warning {% if status_filter == 'pending' %}active{% endif %}">Ожидающие</a>
+        </div>
+    </div>
+
+    {% if responses %}
+        <div class="list-group">
+            {% for response in responses %}
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">
+                        <a href="{% url 'post_detail' response.post.id %}">{{ response.post.title }}</a>
+                    </h5>
+                    <small>{{ response.created_at|date:"d M Y H:i" }}</small>
+                </div>
+                <p class="mb-1">{{ response.text }}</p>
+                <small>От: {{ response.author.email }}</small>
+
+                <div class="mt-2">
+                    {% if not response.accepted %}
+                        <a href="{% url 'accept_response' response.id %}" class="btn btn-sm btn-success">Принять</a>
+                    {% else %}
+                        <span class="badge bg-success">Принято</span>
+                    {% endif %}
+                    <a href="{% url 'delete_response' response.id %}" class="btn btn-sm btn-danger">Удалить</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Пагинация -->
+        <nav class="mt-4">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}">&laquo; Первая</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}">Предыдущая</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}">Следующая</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}">Последняя &raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% else %}
+        <div class="alert alert-info mt-4">
+            У вас пока нет откликов на объявления.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
